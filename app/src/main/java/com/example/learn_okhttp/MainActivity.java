@@ -85,7 +85,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             @Override
             public void onResponse(learn.okhttp3.Call call, Response response) throws IOException {
-                MainActivity.this.request_result_textview.setText(response.body().string());
+                final String responseStr = response.body().string();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        MainActivity.this.request_result_textview.setText(responseStr);
+                    }
+                });
+
             }
         });
     }
