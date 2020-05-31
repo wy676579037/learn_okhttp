@@ -1,5 +1,7 @@
 ## Retrofit源码阅读
 
+代码地址：https://github.com/wy676579037/learn_okhttp
+
 Retrofit 和 OkHttp是目前几乎所有做安卓开发的人网络请求标配，它们 都是由 Square 公司推出的网络请求库，并且 Retrofit 实际上是基于 OkHttp 实现的，它在 OkHttp 现有功能的基础上进行了封装，支持通过<u><font size=4 color=#FF69B4>注解</font></u>进行网络请求参数的配置，同时对数据返回后的解析、序列化进行了统一的包装，甚至在近期引入了对协程对支持。
 
 简单对比下OkHttp跟Retrofit的使用
