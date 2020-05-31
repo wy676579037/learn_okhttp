@@ -6,7 +6,7 @@ import learn.retrofit2.http.GET;
 
 
 //https://www.wanandroid.com
-public interface GitHubService {
+public interface RetrofitTestService {
     @GET("/hotkey/json")
     Call<ResponseBody> hotkey();
 }

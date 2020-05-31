@@ -37,7 +37,7 @@ public class ExampleInstrumentedTest {
                 .baseUrl("https://www.wanandroid.com")
                 .build();
 
-        GitHubService service = retrofit.create(GitHubService.class);
+        RetrofitTestService service = retrofit.create(RetrofitTestService.class);
         Call<ResponseBody> call = service.hotkey();
         call.enqueue(new Callback<ResponseBody>() {
             @Override

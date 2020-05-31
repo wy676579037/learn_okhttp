@@ -10,7 +10,6 @@ import learn.retrofit2.Callback;
 import learn.retrofit2.Retrofit;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -34,58 +33,59 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View view) {
 
         if (view.getId() == R.id.requestClick){
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        MainActivity.this.run("https://www.baidu.com");
-                    } catch (IOException e) {
-                        Log.e("wy",e+"");
-                    }
-                }
-            }).start();
+            MainActivity.this.okHttpTest();
         }
 
-
         if (R.id.retrofitClick==view.getId()){
-
-            Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl("https://www.wanandroid.com")
-                    .build();
-
-            GitHubService service = retrofit.create(GitHubService.class);
-
-            Call<ResponseBody> call = service.hotkey();
-            call.enqueue(new Callback<ResponseBody>() {
-                @Override
-                public void onResponse(Call<ResponseBody> call, learn.retrofit2.Response<ResponseBody> response) {
-                    try {
-                        MainActivity.this.request_result_textview.setText(response.body().string());
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<ResponseBody> call, Throwable t) {
-
-                }
-            });
+            retrofitTest();
         }
 
     }
 
-    void run(String url) throws IOException {
-        Request request = new Request.Builder()
-                .url(url)
+    void retrofitTest(){
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .client(client)
+                .baseUrl("https://www.wanandroid.com")
                 .build();
-        Response response = client.newCall(request).execute();
-        ResponseBody responseBody = response.body();
-        final String result = response.body().string();
-        runOnUiThread(new Runnable() {
+
+        RetrofitTestService service = retrofit.create(RetrofitTestService.class);
+        Call<ResponseBody> call = service.hotkey();
+
+        call.enqueue(new Callback<ResponseBody>() {
             @Override
-            public void run() {
-                MainActivity.this.request_result_textview.setText(result);
+            public void onResponse(Call<ResponseBody> call, learn.retrofit2.Response<ResponseBody> response) {
+                try {
+                    MainActivity.this.request_result_textview.setText(response.body().string());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+            }
+        });
+    }
+
+    void okHttpTest(){
+
+        Request request = new Request.Builder()
+                .url("https://www.wanandroid.com/hotkey/json")
+                .build();
+
+        learn.okhttp3.Call call = client.newCall(request);
+
+        call.enqueue(new learn.okhttp3.Callback() {
+            @Override
+            public void onFailure(learn.okhttp3.Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(learn.okhttp3.Call call, Response response) throws IOException {
+                MainActivity.this.request_result_textview.setText(response.body().string());
             }
         });
     }
