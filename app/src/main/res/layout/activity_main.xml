@@ -20,7 +20,16 @@
             android:layout_width="100dp"
             android:layout_height="60dp"
             android:onClick="onClick"
-            android:text="请求">
+            android:text="Nomarl请求">
+
+        </Button>
+
+        <Button
+            android:id="@+id/retrofitClick"
+            android:layout_width="100dp"
+            android:layout_height="60dp"
+            android:onClick="onClick"
+            android:text="Retrofit请求">
 
         </Button>
 

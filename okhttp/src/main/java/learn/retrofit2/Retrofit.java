@@ -126,10 +126,16 @@ public final class Retrofit {
    */
   @SuppressWarnings("unchecked") // Single-interface proxy creation guarded by parameter safety.
   public <T> T create(final Class<T> service) {
+
+    //校验接口类是否有效
     Utils.validateServiceInterface(service);
+
+    //预处理，后面调用的时候可以直接从缓存里获取
     if (validateEagerly) {
       eagerlyValidateMethods(service);
     }
+
+    // 通过动态代理构建代理对象
     return (T) Proxy.newProxyInstance(service.getClassLoader(), new Class<?>[] { service },
         new InvocationHandler() {
           private final Platform platform = Platform.get();
@@ -137,14 +143,22 @@ public final class Retrofit {
           @Override public Object invoke(Object proxy, Method method, @Nullable Object[] args)
               throws Throwable {
             // If the method is a method from Object then defer to normal invocation.
+
+            // Object 类的方法照常调用
             if (method.getDeclaringClass() == Object.class) {
               return method.invoke(this, args);
             }
+
+            // 如果是对应平台本身的类就有的方法，照常调用
             if (platform.isDefaultMethod(method)) {
               return platform.invokeDefaultMethod(method, service, proxy, args);
             }
+
+           // 否则通过 loadServiceMethod 方法获取到对应 Method 并 invoke
             ServiceMethod<Object, Object> serviceMethod =
                 (ServiceMethod<Object, Object>) loadServiceMethod(method);
+
+            //开始调用方法
             OkHttpCall<Object> okHttpCall = new OkHttpCall<>(serviceMethod, args);
             return serviceMethod.callAdapter.adapt(okHttpCall);
           }
